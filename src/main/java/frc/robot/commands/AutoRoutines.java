@@ -21,7 +21,6 @@ import frc.robot.subsystems.Floor;
 import frc.robot.subsystems.Hanger;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 
@@ -33,7 +32,6 @@ public final class AutoRoutines {
     private final Shooter shooter;
     private final Hood hood;
     private final Hanger hanger;
-    private final Limelight limelight;
 
     private final SubsystemCommands subsystemCommands;
 
@@ -47,8 +45,7 @@ public final class AutoRoutines {
         Feeder feeder,
         Shooter shooter,
         Hood hood,
-        Hanger hanger,
-        Limelight limelight
+        Hanger hanger
     ) {
         this.swerve = swerve;
         this.intake = intake;
@@ -57,7 +54,6 @@ public final class AutoRoutines {
         this.shooter = shooter;
         this.hood = hood;
         this.hanger = hanger;
-        this.limelight = limelight;
 
         this.subsystemCommands = new SubsystemCommands(swerve, intake, floor, feeder, shooter, hood, hanger);
 
@@ -97,7 +93,6 @@ public final class AutoRoutines {
         outpostToDepot.atTimeBeforeEnd(1).onTrue(intake.intakeCommand());
         outpostToDepot.doneDelayed(0.1).onTrue(depotToShootingPose.cmd());
 
-        depotToShootingPose.active().whileTrue(limelight.idle());
         depotToShootingPose.atTime(0.5).onTrue(
             Commands.parallel(
                 shooter.spinUpCommand(2600),
@@ -112,7 +107,6 @@ public final class AutoRoutines {
             )
         );
 
-        shootingPoseToTower.active().whileTrue(limelight.idle());
         shootingPoseToTower.active().onTrue(hanger.positionCommand(Hanger.Position.HANGING));
         shootingPoseToTower.done().onTrue(hanger.positionCommand(Hanger.Position.HUNG));
 
